@@ -3,12 +3,13 @@
     <head>
         <title>Console Rock Paper Scissors</title>
         <style>
-            h1, button {
+            h1, button, p {
                 text-align: center;
             }
             div {
                 display: flex;
-                margin: 10em;
+                margin: 10em 0 5em 0;
+                gap: 15px;
                 justify-content: center;
                 align-items: center;
             }
@@ -17,71 +18,60 @@
                 width: 200px;
                 font-size: 36px;
             }
+            p {
+                font-size: 36px;
+                font-weight: 450;
+            }
         </style>
     </head>
     <body>
         <h1>Rock Paper Scissors</h1>
-        <div><button id="go">Play</button></div>
+        <div><button id="rock">Rock</button><button id="paper">Paper</button><button id="scissors">Scissors</button></div>
+        <p id="round">Your move, buddy.</p>
+        <p id = "game"></p>
     </body>
     <script>
-            function round() {
-                alert("Rock, paper, scissors, shoot!");
-                let move = prompt("What's your move?");
-                move = move.toLowerCase()
-                let attack = -1
-                if (move == "rock") {
-                    attack = 0;
-                } else if (move == "paper") {
-                    attack = 1;
-                } else if (move == "scissors") {
-                    attack = 2;
-                } else if (move == "nuke") {
-                    alert("Everyone is dead! You win!");
-                    return 4
+            let score = [0, 0]; //Player, Bot
+            let rounds = 1
+            let scoreboard = document.querySelector("#game");
+
+            function updateScore() {
+                let newScore = ""
+                if (rounds < 6) {
+                    newScore = "Round " + rounds + "! You: " + score[0] + ", Bot: " + score[1]
                 } else {
-                    alert("Not a valid move! Choose rock, paper or scissors.");
-                    return 0
+                    rounds = 1;
+                    newScore = "best out of five!";
+                    if (score[0] > score[1]) {newScore = "You won " + newScore;} else if (score[0] < score[1]) {newScore = "You lost " + newScore;} else {newScore = "You drawed " + newScore;}
                 }
+                scoreboard.textContent = newScore;
+            }
+            updateScore();
+
+            function round(attack) {
+                alert("Rock, paper, scissors, shoot!");
+                
                 let opposition = Math.floor(Math.random()) * 3;
                 if (attack == opposition) {
                     alert("It's a draw!");
-                    return 1
                 } else if ((attack == 0 && opposition == 1) || (attack == 1 && opposition == 2) || (attack == 2 && opposition == 0)) {
                     alert("You lost!");
-                    return 2
+                    score[1] += 1;
                 } else {
                     alert("You win!");
-                    return 3
+                    score[0] += 1;
                 }
+                rounds += 1;
+                updateScore();
             }
-            function game() {
-                let playerScore = 0
-                let botScore = 0
-                for (let rounds = 0; rounds < 5; rounds++) {
-                    score = round();
-                    if (score == 1) {
-                        playerScore = playerScore + 0.5;
-                        botScore = botScore + 0.5;
-                    } else if (score == 2) {
-                        botScore = botScore + 1;
-                    } else if (score == 3) {
-                        playerScore = playerScore + 1;
-                    } else if (score == 4) {
-                        return
-                    } else {
-                        rounds = rounds - 1;
-                    }
-                }
-                if (playerScore > botScore) {
-                    alert("You won the whole game!");
-                } else if (botScore > playerScore) {
-                    alert("The bot won the whole game!");
-                } else {
-                    alert("The whole game was a draw!")
-                }
-                alert("Final score, you: " + playerScore + ", the machine: " + botScore)
-            }
-            let playButton = document.getElementById("go");
-            playButton.addEventListener("click", game);
+
+            let rock = document.querySelector("#rock");
+            rock.addEventListener("click", () => round(0));
+            let paper = document.querySelector("#paper");
+            paper.addEventListener("click", () => round(1));
+            let scissors = document.querySelector("#scissors");
+            scissors.addEventListener("click", () => round(2));
+
+
         </script>
 </html>
